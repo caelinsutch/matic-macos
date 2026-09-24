@@ -80,4 +80,4 @@ export MATIC_CERT_SHA256=VERIFIED_SHA256_FINGERPRINT
 .venv/bin/mypy src/matic_sdk
 ```
 
-CI runs the offline suite on Linux and macOS. It does not exercise real Bluetooth hardware. Upstream's PyPI publishing workflow is removed from this fork.
+The inactive CI template at `.github/ci-template.yml` defines offline Linux and macOS checks. To enable it, move it to `.github/workflows/ci.yml` using a GitHub login with workflow permission. Hardware pairing is not covered by CI. Upstream's PyPI publishing workflow is removed from this fork.
