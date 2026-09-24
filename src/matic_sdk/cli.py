@@ -352,7 +352,7 @@ def enroll(
         typer.Option(min=1.0, help="Seconds allowed for pairing and enrollment."),
     ] = 60.0,
 ) -> None:
-    """Pair over Linux Bluetooth and save a new BotToken privately."""
+    """Pair over Bluetooth (experimental on macOS) and save a BotToken privately."""
 
     try:
         store = CredentialStore(device_alias, root=credential_root)

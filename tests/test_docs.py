@@ -13,7 +13,11 @@ _REPOSITORY_BLOB_PREFIX = (
 
 
 def _documents() -> tuple[Path, ...]:
-    return (Path("README.md"), *sorted(Path("docs").glob("*.md")))
+    return (
+        Path("README.md"),
+        Path("UPSTREAM_README.md"),
+        *sorted(Path("docs").glob("*.md")),
+    )
 
 
 def test_documented_python_compiles_and_imports_public_names() -> None:
@@ -62,8 +66,8 @@ def test_local_documentation_links_resolve() -> None:
     assert checked >= 20
 
 
-def test_public_readme_uses_installed_cli_and_keeps_both_map_images() -> None:
-    readme = Path("README.md").read_text(encoding="utf-8")
+def test_upstream_readme_uses_installed_cli_and_keeps_both_map_images() -> None:
+    readme = Path("UPSTREAM_README.md").read_text(encoding="utf-8")
 
     assert "uv run matic" not in readme
     assert "--device living-room" not in readme

@@ -113,7 +113,11 @@ class FakeClient:
         return self.response
 
 
-async def test_acquire_token_uses_acknowledged_write_then_read() -> None:
+@pytest.mark.parametrize("platform", ["linux", "darwin"])
+async def test_acquire_token_uses_acknowledged_write_then_read(
+    monkeypatch, platform
+) -> None:
+    monkeypatch.setattr(enrollment.sys, "platform", platform)
     user_id = str(uuid.UUID(int=4))
     FakeClient.instances.clear()
     FakeClient.response = synthetic_token(user_id)
@@ -137,7 +141,10 @@ async def test_acquire_token_uses_acknowledged_write_then_read() -> None:
     assert token.user_id == user_id
     assert len(FakeClient.instances) == 1
     client = FakeClient.instances[0]
-    assert client.options["pair"] is True
+    if platform == "darwin":
+        assert "pair" not in client.options
+    else:
+        assert client.options["pair"] is True
     assert client.writes == [
         ("token-characteristic", serialize_token_request(user_id), True)
     ]

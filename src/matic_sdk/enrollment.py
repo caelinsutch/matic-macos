@@ -1,4 +1,4 @@
-"""Linux/BlueZ enrollment through Matic's BLE token service."""
+"""BLE enrollment, with experimental macOS/CoreBluetooth support."""
 
 from __future__ import annotations
 
@@ -50,8 +50,8 @@ class EnrollmentResult:
 
 
 def _bleak() -> tuple[Any, Any]:
-    if not sys.platform.startswith("linux"):
-        raise BleSupportUnavailable("BLE enrollment currently requires Linux/BlueZ")
+    if not (sys.platform.startswith("linux") or sys.platform == "darwin"):
+        raise BleSupportUnavailable("BLE enrollment requires Linux or macOS")
     try:
         from bleak import BleakClient, BleakScanner
     except ImportError as exc:
@@ -157,7 +157,11 @@ async def acquire_bot_token(
     client_type, _ = _bleak() if _client_factory is None else (_client_factory, None)
     request = serialize_token_request(user_id)
     target = candidate._native_device
-    async with client_type(target, pair=pair, timeout=timeout) as client:
+    # CoreBluetooth prompts on protected GATT access, rather than explicit pairing.
+    options: dict[str, Any] = {"timeout": timeout}
+    if sys.platform != "darwin":
+        options["pair"] = pair
+    async with client_type(target, **options) as client:
         if not client.is_connected:
             raise EnrollmentError("BLE connection did not reach connected state")
         if _find_characteristic(client) is not None:

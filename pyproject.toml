@@ -20,6 +20,7 @@ classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS :: MacOS X",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -51,6 +52,7 @@ all = [
 
 [project.scripts]
 matic = "matic_sdk.cli:app"
+matic-macos = "matic_sdk.macos:main"
 
 [dependency-groups]
 dev = [
